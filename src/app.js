@@ -2,6 +2,52 @@ var UI = require('ui');
 var ajax = require('ajax');
 var Vibe = require('ui/vibe');
 var Accel = require('ui/accel');
+var Settings = require('settings');
+var URL;
+
+
+
+// Set a configurable with the open callback
+Settings.config(
+  { url: 'https://seantodd.no-ip.org/configurable.html' },
+  function(e) {
+    console.log('opening configurable');
+
+    // Reset color to red before opening the webview
+    Settings.option('hostname', 'http://google.co.uk');
+  },
+  function(e) {
+    console.log('closed configurable');
+  }
+);
+
+// Set a configurable with just the close callback
+Settings.config(
+  { url: 'https://seantodd.no-ip.org/configurable.html' },
+  function(e) {
+    console.log('closed configurable');
+
+    // Show the parsed response
+    console.log("Data is: " + JSON.stringify(e.options));
+
+    
+    var hostname;
+			hostname = JSON.parse(decodeURIComponent(e.response));
+			localStorage.clear();
+			localStorage.setItem("hostname", JSON.stringify(hostname));
+			console.log("Host name: " + localStorage.getItem("hostname"));
+    URL = hostname;
+    
+    // Show the raw response if parsing failed
+    if (e.failed) {
+      console.log(e.response);
+    }
+  }
+);
+
+
+
+console.log("The URL is: " + URL);
 
 
 // Create a Card with title and subtitle
@@ -17,6 +63,7 @@ card.show();
 Accel.init();
 
 // Construct URL
+
 
 
 
